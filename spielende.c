@@ -59,9 +59,9 @@ void wer_gewinnt(){
 
     //DIAGONAL
 
-    if(Feld[ 0 ] == 'X/O' && Feld[ 4 ] == 'X/O' && Feld[ 8 ] == 'X/O'){
+    if(Feld[ 0 ] == 'X' && Feld[ 4 ] == 'X' && Feld[ 8 ] == 'X'){
         //return 1;
-    } else if(Feld[ 2 ] == 'X/O' && Feld[ 4 ] == 'X/O' && Feld[ 6 ] == 'X/O'){
+    } else if(Feld[ 2 ] == 'X' && Feld[ 4 ] == 'X' && Feld[ 6 ] == 'X'){
         //return 1;
     }
 
