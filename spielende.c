@@ -1,4 +1,4 @@
-/* NAME: Spielende
+/* NAME: Spielende.c
 AUTHOREN: Nathalie Kascha
 BESCHREIBUNG: Es soll ermittelt werden, wer gewonnen hat oder ob das Spiel mit ein unentschieden endet.
 */
