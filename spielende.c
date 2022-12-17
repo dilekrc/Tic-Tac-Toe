@@ -30,7 +30,7 @@ unentschieden hat den Wert "0", wenn es unentschieden ausging.
 Wenn es unklar ist, dann "2".
 
 COMPUTER = 'O'
-HUMAN = 'X'
+SPIELER = 'X'
 
 */
 
