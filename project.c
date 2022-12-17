@@ -13,15 +13,15 @@ Beschreibung : Erstellung vom Spielfeld und initalisieurng von Spielern.
 #include <stdlib.h>
 #include <ctype.h>
 
-// Erstellt ein zweidimensionalen Feld mit 9 Bereichen
-char feld[3][3]; 
+
 // Erstelle eine konstante Variable für den Spieler und für die KI
+int spielfeld[3][3];
 
 void feldErneuern(){
 // Alle Felder werden auf ' ' gesetzt
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < 3; j++){
-            feld[i][j] = ' ';
+           spielfeld[i][j] = ' ';
         }
     }
 }
@@ -29,6 +29,9 @@ void feldErneuern(){
 int checkeFreieFelder(){
 // Checken von freien Feldern in dem man runterzählt
     int freieFelder = 9;
+    int i;
+    int j;
+    int feld[i][j];
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < 3; j++){
             if(feld[i][j] != ' '){
@@ -38,8 +41,17 @@ int checkeFreieFelder(){
     }
     return freieFelder;
 }
-
+/*
+|  [0]  |  [1]  |  [2]  |
+-------------------------
+|  [3]  |  [4]  |  [5]  |         // <-- bsp FELD
+-------------------------
+|  [6]  |  [7]  |  [8]  |
+*/
 char checkeGewinner(){
+    int i;
+    int j;
+    int feld[i][j];
     // Checke Spalte
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2]){
@@ -64,87 +76,6 @@ char checkeGewinner(){
     return ' ';
 }
 
-
-/* NAME: Spielende.c
-AUTHOREN: Nathalie Kascha
-BESCHREIBUNG: Es soll ermittelt werden, wer gewonnen hat oder ob das Spiel mit ein unentschieden endet.
-*/
-
-
-#include <stdio.h>
-
-int main(){
-
-    return 0;
-}
-
-/*
-|  [0]  |  [1]  |  [2]  |
--------------------------
-|  [3]  |  [4]  |  [5]  |         // <-- bsp FELD
--------------------------
-|  [6]  |  [7]  |  [8]  |
-*/
-
-int wer_gewinnt(){
-
-    //HORIZONTAL 
-
-    int Feld[9];
-
-    if(Feld[ 0 ] == 'X' && Feld[ 1 ] == 'X' && Feld[ 2 ] == 'X'){
-        return 1;
-    } else if(Feld[ 3 ] == 'X' && Feld[ 4 ] == 'X' && Feld[ 5 ] == 'X'){
-        return 1;
-    } else if(Feld[ 6 ] == 'X' && Feld[ 7 ] == 'X' && Feld[ 8 ] == 'X'){
-        return 1;
-    }
-
-    if(Feld[ 0 ] == 'O' && Feld[ 1 ] == 'O' && Feld[ 2 ] == 'O'){
-        return 1;
-    } else if(Feld[ 3 ] == 'O' && Feld[ 4 ] == 'O' && Feld[ 5 ] == 'O'){
-        return 1;
-    } else if(Feld[ 6 ] == 'O' && Feld[ 7 ] == 'O' && Feld[ 8 ] == 'O'){
-        return 1;
-    }
-
-    //VERTIKAL
-
-    if(Feld[ 0 ] == 'X' && Feld[ 3 ] == 'X' && Feld[ 6 ] == 'X'){
-        return 1;
-    } else if(Feld[ 1 ] == 'X' && Feld[ 4 ] == 'X' && Feld[ 7 ] == 'X'){
-        return 1;
-    } else if(Feld[ 2 ] == 'X' && Feld[ 5 ] == 'X' && Feld[ 8 ] == 'X'){
-        return 1;
-    }
-
-    if(Feld[ 0 ] == 'O' && Feld[ 3 ] == 'O' && Feld[ 6 ] == 'O'){
-        return 1;
-    } else if(Feld[ 1 ] == 'O' && Feld[ 4 ] == 'O' && Feld[ 7 ] == 'O'){
-        return 1;
-    } else if(Feld[ 2 ] == 'O' && Feld[ 5 ] == 'O' && Feld[ 8 ] == 'O'){
-        return 1;
-    }
-
-    //DIAGONAL
-
-    if(Feld[ 0 ] == "X/O" && Feld[ 4 ] == "X/O" && Feld[ 8 ] == "X/O"){
-        return 1;
-    } else if(Feld[ 2 ] == "X/O" && Feld[ 4 ] == "X/O" && Feld[ 6 ] == "X/O"){
-        return 1;
-    }
-
-    if(Feld[ 0 ] == 'O' && Feld[ 4 ] == 'O' && Feld[ 8 ] == 'O'){
-        return 1;
-    } else if(Feld[ 2 ] == 'O' && Feld[ 4 ] == 'O' && Feld[ 6 ] == 'O'){
-        return 1;
-    } else{
-        return 0;
-    }
-
-
-}
-
 /*
 ======================================================================================================
 NAME: tictactoe.interagieren.spieler.c
@@ -159,12 +90,14 @@ VERSION GESCHICHTE:
 
 =====================================================================================================
 */
-#include <stdio.h>
+
 
 void spielzug(){
     int x; //für Zeile
     int y; //für Spalten
-
+    int i;
+    int j;
+    int feld[i][j];
 
     // Zeile auswaehlen
     printf("Waehle eine Zeile (1-3): \n");
@@ -191,12 +124,23 @@ void spielzug(){
     }
     
 }
-
-void spielerwechsel(char wechsel){
+ char wechsel;
+void spielerwechsel(){
     if(wechsel == 'X'){
         wechsel = 'O';
     } else{
         wechsel = 'X';
     }
 
+}
+
+
+int main(){
+    int spielfeld[3][3];
+   feldErneuern();
+   checkeFreieFelder();
+   spielzug();
+   checkeGewinner();
+    
+    
 }
