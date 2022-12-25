@@ -12,26 +12,47 @@ Beschreibung : Erstellung vom Spielfeld und initalisieurng von Spielern.
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <time.h>
 
 
 // Erstelle eine konstante Variable für den Spieler und für die KI
-int spielfeld[3][3];
+char feld[3][3];
+const char SPIELER ='X';
+const char SPIELERZWEI = 'O';
+const char COMPUTER = 'O';
+
+void feldErneuern();
+void feldErstellen();
+int checkeFreieFelder();
+void spielzug();
+void computerSpielzug();
+void spielerZweiSpielzug();
+char checkeGewinner();
+void gewinnerAusgabe(char);
+void gewinnerAusgabeMehrspieler(char);
+
 
 void feldErneuern(){
 // Alle Felder werden auf ' ' gesetzt
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < 3; j++){
-           spielfeld[i][j] = ' ';
+           feld[i][j] = ' ';
         }
     }
+}
+
+void feldErstellen(){
+   printf(" %c | %c | %c ", feld[0][0], feld[0][1], feld[0][2]);
+   printf("\n---|---|---\n");
+   printf(" %c | %c | %c ", feld[1][0], feld[1][1], feld[1][2]);
+   printf("\n---|---|---\n");
+   printf(" %c | %c | %c ", feld[2][0], feld[2][1], feld[2][2]);
+   printf("\n");
 }
 
 int checkeFreieFelder(){
 // Checken von freien Feldern in dem man runterzählt
     int freieFelder = 9;
-    int i;
-    int j;
-    int feld[i][j];
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < 3; j++){
             if(feld[i][j] != ' '){
@@ -49,9 +70,7 @@ int checkeFreieFelder(){
 |  [6]  |  [7]  |  [8]  |
 */
 char checkeGewinner(){
-    int i;
-    int j;
-    int feld[i][j];
+
     // Checke Spalte
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2]){
@@ -91,56 +110,164 @@ VERSION GESCHICHTE:
 =====================================================================================================
 */
 
-
 void spielzug(){
     int x; //für Zeile
     int y; //für Spalten
-    int i;
-    int j;
-    int feld[i][j];
 
     // Zeile auswaehlen
-    printf("Waehle eine Zeile (1-3): \n");
-    scanf("%d", &x);
+    do{
+      printf("Waehle eine Zeile #(1-3): ");
+      scanf("%d", &x);
+      x--;
+      printf("Waehle eine Spalte #(1-3): ");
+      scanf("%d", &y);
+      y--;
 
-    // Spalte auswaehlen
-    printf("Waehle eine Spalte (1-3): \n");
-    scanf("%d", &y);
-
-    // Eingabe muss leerem Feld entsprechen
-    if(feld[x][y] =! ' '){
-        printf("Ungueltiger Spielzug");
-    } else{
-        feld[x][y] =' ';
-       
-    }
-    if(x < 1 || x > 3 || y < 1 || y > 3){
-
-        printf("Ungueltige Eingabe! Bitte geben Sie nur 1, 2 oder 3 ein!\n");
-    }
-    while(x >= 1 || x <= 3 || y >= 1 || y <= 3){
-
-        getchar();
-    }
-    
+      if(feld[x][y] != ' ')
+      {
+         printf("Ungueltiger Spielzug!\n");
+      }
+      else
+      {
+         feld[x][y] = SPIELER;
+         break;
+      }
+   } while (feld[x][y] != ' ');
 }
- char wechsel;
-void spielerwechsel(){
-    if(wechsel == 'X'){
-        wechsel = 'O';
-    } else{
-        wechsel = 'X';
-    }
+   
+void computerSpielzug(){
 
+   srand(time(0));
+   int x;
+   int y;
+
+   if(checkeFreieFelder() > 0)
+   {
+      do{
+         x = rand() % 3;
+         y = rand() % 3;
+      } while (feld[x][y] != ' ');
+     
+      feld[x][y] = COMPUTER;
+   }
+   else{
+      gewinnerAusgabe(' ');
+   }
 }
 
+void spielerZweiSpielzug(){
+    int x; //für Zeile
+    int y; //für Spalten
+
+    // Zeile auswaehlen
+    do{
+      printf("Waehle eine Zeile #(1-3): ");
+      scanf("%d", &x);
+      x--;
+      printf("Waehle eine Spalte #(1-3): ");
+      scanf("%d", &y);
+      y--;
+
+      if(feld[x][y] != ' ')
+      {
+         printf("Ungueltiger Spielzug!\n");
+      }
+      else
+      {
+         feld[x][y] = SPIELERZWEI;
+         break;
+      }
+   } while (feld[x][y] != ' ');
+}
+
+void gewinnerAusgabe(char gewinner)
+{
+   if(gewinner == SPIELER)
+   {
+      printf("Du hast gewonnen!");
+   }
+   else if(gewinner == COMPUTER)
+   {
+      printf("Du hast verloren!");
+   }
+   else{
+      printf("Unentschieden!");
+   }
+}
+
+void gewinnerAusgabeMehrspieler(char gewinner)
+{
+   if(gewinner == SPIELER)
+   {
+      printf("Spieler 1 gewinnt!");
+   }
+   else if(gewinner == SPIELERZWEI)
+   {
+      printf("Spieler 2 gewinnt!");
+   }
+   else{
+      printf("Unentschieden!");
+   }
+}
 
 int main(){
-    int spielfeld[3][3];
-   feldErneuern();
-   checkeFreieFelder();
-   spielzug();
-   checkeGewinner();
-    
-    
+    char gewinner = ' ';
+    int a;
+
+    printf("Computer oder Mehrpsieler?\n");
+    printf("Computer: 1 \nMehrspieler: 2\n");
+    scanf("%d", &a);
+   
+    feldErneuern();
+
+    if(a == 1){
+        while(gewinner == ' ' && checkeFreieFelder() != 0){
+        feldErstellen();
+        spielzug();
+       
+        gewinner = checkeGewinner();
+            if(gewinner != ' ' || checkeFreieFelder() == 0){
+                break;
+            }
+       
+        computerSpielzug();
+       
+        gewinner = checkeGewinner();
+            if(gewinner != ' ' || checkeFreieFelder() == 0){
+                break;
+            }
+        }
+
+    feldErstellen();
+    gewinnerAusgabe(gewinner);
+
+    } else if(a == 2){
+        while(gewinner == ' ' && checkeFreieFelder() != 0){
+        feldErstellen();
+        spielzug();
+       
+        gewinner = checkeGewinner();
+            if(gewinner != ' ' || checkeFreieFelder() == 0){
+                break;
+            }
+       
+        feldErstellen();
+        spielerZweiSpielzug();
+       
+        gewinner = checkeGewinner();
+            if(gewinner != ' ' || checkeFreieFelder() == 0){
+                break;
+            }
+        }
+
+    feldErstellen();
+    gewinnerAusgabeMehrspieler(gewinner);
+
+    }else{
+        printf("Ungueltige Eingabe!\n");
+    }
+
+
+
+    return 0;
 }
