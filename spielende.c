@@ -118,6 +118,9 @@ void untersuchung(){
         int currrentplayer = -1;
     }
 
+
+
+
     void minimax(int Feld[3][3], int depth, int max_spieler){
     //Prüfen, ob jemand gewonnen hat
     int ergebnis = untersuchung();
@@ -135,7 +138,7 @@ void untersuchung(){
         for(int j = 0; j < 3; j++){
             if(feld[i][j] == 2) //leeres Feld?
 
-            feld[i][j] = -1; //setze O hin
+            feld[i][j] = 1; //setze O hin
 
             //Der wert des nächsten zugs berechnen
             wert = minimax(Feld, depth+1, -max_spieler)
@@ -156,7 +159,7 @@ void untersuchung(){
         for(int j = 0; j < 3; j++){
             if(feld[i][j] == 2) //leeres Feld?
 
-            feld[i][j] = 1; //setze O hin
+            feld[i][j] = -1; //setze O hin
 
             //Der wert des nächsten zugs berechnen
             wert = minimax(Feld, depth+1, max_spieler)
