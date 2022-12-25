@@ -1,19 +1,15 @@
 /*
-
 Name        : datenstrunkturen.c
 
 Authoren    : Dilek Karaca, Kevin Fach
 
 Beschreibung : Erstellung vom Spielfeld und initalisieurng von Spielern.
-
-
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
-
 
 // Erstelle eine konstante Variable für den Spieler und für die KI
 char feld[3][3];
@@ -30,7 +26,6 @@ void spielerZweiSpielzug();
 char checkeGewinner();
 void gewinnerAusgabe(char);
 void gewinnerAusgabeMehrspieler(char);
-
 
 void feldErneuern(){
 // Alle Felder werden auf ' ' gesetzt
@@ -111,6 +106,7 @@ VERSION GESCHICHTE:
 */
 
 void spielzug(){
+    
     int x; //für Zeile
     int y; //für Spalten
 
@@ -134,20 +130,20 @@ void spielzug(){
       }
    } while (feld[x][y] != ' ');
 }
-   
+    
 void computerSpielzug(){
+    
+    srand(time(0));
+    int x;
+    int y;
 
-   srand(time(0));
-   int x;
-   int y;
-
-   if(checkeFreieFelder() > 0)
-   {
+    if(checkeFreieFelder() > 0){
+      
       do{
          x = rand() % 3;
          y = rand() % 3;
       } while (feld[x][y] != ' ');
-     
+      
       feld[x][y] = COMPUTER;
    }
    else{
@@ -156,6 +152,7 @@ void computerSpielzug(){
 }
 
 void spielerZweiSpielzug(){
+    
     int x; //für Zeile
     int y; //für Spalten
 
@@ -180,8 +177,8 @@ void spielerZweiSpielzug(){
    } while (feld[x][y] != ' ');
 }
 
-void gewinnerAusgabe(char gewinner)
-{
+void gewinnerAusgabe(char gewinner){
+   
    if(gewinner == SPIELER)
    {
       printf("Du hast gewonnen!");
@@ -195,8 +192,8 @@ void gewinnerAusgabe(char gewinner)
    }
 }
 
-void gewinnerAusgabeMehrspieler(char gewinner)
-{
+void gewinnerAusgabeMehrspieler(char gewinner){
+  
    if(gewinner == SPIELER)
    {
       printf("Spieler 1 gewinnt!");
@@ -211,27 +208,37 @@ void gewinnerAusgabeMehrspieler(char gewinner)
 }
 
 int main(){
+    
     char gewinner = ' ';
+    char antwort;
     int a;
 
-    printf("Computer oder Mehrpsieler?\n");
-    printf("Computer: 1 \nMehrspieler: 2\n");
+    printf("TIC TAC TOE SPIEL\n");
+    printf("MODUS: Computer(1) oder Mehrspieler(2)?\n");
+    printf("Eingabe : ");
     scanf("%d", &a);
-   
+    
     feldErneuern();
 
-    if(a == 1){
+    do{
+        gewinner = ' ';
+        antwort = ' ';
+        feldErneuern();
+        
+        if(a == 1){
+        
+        printf("SPIELER(X) COMPUTER(O)\n");
         while(gewinner == ' ' && checkeFreieFelder() != 0){
         feldErstellen();
         spielzug();
-       
+        
         gewinner = checkeGewinner();
             if(gewinner != ' ' || checkeFreieFelder() == 0){
                 break;
             }
-       
+        
         computerSpielzug();
-       
+        
         gewinner = checkeGewinner();
             if(gewinner != ' ' || checkeFreieFelder() == 0){
                 break;
@@ -241,19 +248,26 @@ int main(){
     feldErstellen();
     gewinnerAusgabe(gewinner);
 
+    printf("\nMoechtest du nochmal spielen? (J/N): ");
+    getchar();
+    scanf("%c", &antwort);
+    antwort = toupper(antwort);
+
     } else if(a == 2){
+        
+        printf("SPIELER 1(X) SPIELER 2(O)\n");
         while(gewinner == ' ' && checkeFreieFelder() != 0){
         feldErstellen();
         spielzug();
-       
+        
         gewinner = checkeGewinner();
             if(gewinner != ' ' || checkeFreieFelder() == 0){
                 break;
             }
-       
+        
         feldErstellen();
         spielerZweiSpielzug();
-       
+        
         gewinner = checkeGewinner();
             if(gewinner != ' ' || checkeFreieFelder() == 0){
                 break;
@@ -263,11 +277,22 @@ int main(){
     feldErstellen();
     gewinnerAusgabeMehrspieler(gewinner);
 
+    printf("\nMoechtest du nochmal spielen? (J/N): ");
+    getchar();
+    scanf("%c", &antwort);
+    antwort = toupper(antwort);
     }else{
+       
         printf("Ungueltige Eingabe!\n");
+        printf("\nMoechtest du nochmal spielen? (J/N): ");
+        getchar();
+        scanf("%c", &antwort);
+        antwort = toupper(antwort);
     }
+    }while(antwort == 'J');
 
-
-
+    printf("Danke fuers Spielen!");
+    
     return 0;
+
 }
