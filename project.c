@@ -68,26 +68,28 @@ char checkeGewinner(){
 
     // Checke Spalte
     for(int i = 0; i < 3; i++){
-        if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2]){
+        if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2] && feld[i][0] != ' '){
             return feld [i][0];
         }
     }
 
     // Checke Reihe
      for(int i = 0; i < 3; i++){
-     if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i]){
+     if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i] && feld[0][i] != ' '){
         return feld[0][i];
         }
     }
 
     // Checke Diagonale
-        if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2]){
+        if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] != ' '){
             return feld [0][0];
         }
-         if(feld[0][2] == feld[1][1] && feld[0][2] == feld[2][0]){
-            return feld[0][0];
+         if(feld[0][2] == feld[1][1] && feld[0][2] == feld[2][0] && feld[0][2] != ' '){
+            return feld[0][2];
         }
     return ' ';
+
+
 }
 
 /*
