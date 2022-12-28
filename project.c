@@ -118,12 +118,11 @@ void spielzug(){
 
     // Zeile auswaehlen
     do{
-        printf("\nWaehle eine Zeile #(1-3): ");
-        scanf("%d", &x);
+        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
+        scanf("%d %d", &x, &y);
         x--;
-        printf("Waehle eine Spalte #(1-3): ");
-        scanf("%d", &y);
         y--;
+        
 
         if(feld[x][y] != ' ')
         {
@@ -158,11 +157,9 @@ void spielerZweiSpielzug(){
 
     // Zeile auswaehlen
     do{
-        printf("\nWaehle eine Zeile #(1-3): ");
-        scanf("%d", &x);
+        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
+        scanf("%d %d", &x, &y);
         x--;
-        printf("Waehle eine Spalte #(1-3): ");
-        scanf("%d", &y);
         y--;
 
         if(feld[x][y] != ' ')
