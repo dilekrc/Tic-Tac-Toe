@@ -87,7 +87,7 @@ void untersuchung(){
 
 /*Hier wird das MinMax-Algorithmus implementiert*/
 
-    /*Den besten Zug für den computer finden*/
+    /*Den besten Zug für den computer finiden*/
 
     /*Der Computer ist dran*/
 
