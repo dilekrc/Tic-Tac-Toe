@@ -34,11 +34,14 @@ SPIELER = 'O'
 
 */
 
+/*
+
 void untersuchung(){
 
     /*Hier wird jedes Feld nach 'X' ueberprueft*/
 
     //Horizontal geprueft, wer gewinnt.
+    /*
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == 1 && feld[i][1] == 1 &&feld[i][2] == 1) 
         return 1;
@@ -57,7 +60,7 @@ void untersuchung(){
 
     /*Hier wird jedes Feld nach 'O' ueberprueft*/
 
-    //Horizontal geprueft, wer gewinnt.
+    //Horizontal geprueft, wer gewinnt. /*
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == -1 && feld[i][1] == -1 &&feld[i][2] == -1) //Hier wird jedes Feld nach 'O' ueberprueft
         return -1;
@@ -73,6 +76,7 @@ void untersuchung(){
 
     if(feld[0][2] == 1 && feld[1][1]==1 && feld[2][0]==1)
     return -1;
+    
 
     /*Hier werden alle Positionen durchgegangen. Und es wird ueberprueft, ob ein Feld offen ist = "Unklar"*/
     for(int i = 0; i < 3; i++){
@@ -85,6 +89,7 @@ void untersuchung(){
     }
 }
 
+
 /*Hier wird das MinMax-Algorithmus implementiertmmmm*/
 
     /*Den besten Zug für den computer finiden*/
@@ -92,7 +97,7 @@ void untersuchung(){
     /*Der Computer ist dran*/
 
 
-    void besten_zug(){
+    /*void besten_zug(){
     int beste_wert = -999; //unendlich
     int wert;
     int best_zug;
@@ -173,5 +178,4 @@ void untersuchung(){
     }
     return beste_wert;  //Alle moeglichen zuege für den Spieler
 }
-
-
+*/
