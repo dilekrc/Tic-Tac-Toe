@@ -150,9 +150,9 @@ void spielerZweiSpielzug(){
     int x; //für Zeile
     int y; //für Spalten
 
-    // Zeile auswaehlen
+    // Zeile und Spalte auswählen
     do{
-        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
+        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");   
         scanf("%d %d", &x, &y);
         x--;
         y--;
@@ -280,12 +280,12 @@ int main(){
     antwort = toupper(antwort);     // ToUpper ist dafür da, um die Zeichenkette in Großbuchstaben auszugeben
     }else{
        
-        printf("Ungueltige Eingabe!\n");    // Falls man den falschen Modus wählt, kommt die Ausgabe Ungültige Eingabe
+        printf("Ungueltige Eingabe!\n");    // Falls man den falschen Modus wählt, kommt die Ausgabe Ungültige Eingabe und das Program wird geschloßen
         abort();
     }
-    }while(antwort == 'J');
+    }while(antwort == 'J');     // Falls man J auswählt fängt das Spiel von neu an
 
-    printf("Danke fuers Spielen!");
+    printf("Danke fuers Spielen!");     // Falls man N auswählt, kommt die Ausgabe Danke fürs spielen und das Program schließt sich
     
     return 0;
 
