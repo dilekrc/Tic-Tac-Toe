@@ -10,6 +10,7 @@ BESCHREIBUNG: Es soll ermittelt werden, wer gewonnen hat oder ob das Spiel mit e
 
 
 #include <stdio.h>
+#include <.../project.c>
 
 int main(){
 

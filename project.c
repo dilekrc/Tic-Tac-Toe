@@ -37,16 +37,17 @@ void feldErneuern(){
 }
 
 void feldErstellen(){
-   printf(" _____________________");
-   printf("\n|  _________________  |");
-   printf("\n| |                 | |");
-   printf("\n| |    %c | %c | %c    | |", feld[0][0], feld[0][1], feld[0][2]);
-   printf("\n| |   ---|---|---   | |\n");
-   printf("| |    %c | %c | %c    | |", feld[1][0], feld[1][1], feld[1][2]);
-   printf("\n| |   ---|---|---   | |\n");
-   printf("| |    %c | %c | %c    | |", feld[2][0], feld[2][1], feld[2][2]);
-   printf("\n| |_________________| |");
-   printf("\n|_____________________|\n");
+    // Hier wird das Feld erstellt
+    printf(" _____________________");
+    printf("\n|  _________________  |");
+    printf("\n| |                 | |");
+    printf("\n| |    %c | %c | %c    | |", feld[0][0], feld[0][1], feld[0][2]);
+    printf("\n| |   ---|---|---   | |\n");
+    printf("| |    %c | %c | %c    | |", feld[1][0], feld[1][1], feld[1][2]);
+    printf("\n| |   ---|---|---   | |\n");
+    printf("| |    %c | %c | %c    | |", feld[2][0], feld[2][1], feld[2][2]);
+    printf("\n| |_________________| |");
+    printf("\n|_____________________|\n");
 }
 
 int checkeFreieFelder(){
@@ -61,30 +62,24 @@ int checkeFreieFelder(){
     }
     return freieFelder;
 }
-/*
-|  [0]  |  [1]  |  [2]  |
--------------------------
-|  [3]  |  [4]  |  [5]  |         // <-- bsp FELD
--------------------------
-|  [6]  |  [7]  |  [8]  |
-*/
+
 char checkeGewinner(){
 
-    // Checke Spalte
+    // Checke Spalte um den Gewinner zu ermitteln
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2] && feld[i][0] != ' '){
             return feld [i][0];
         }
     }
 
-    // Checke Reihe
+    // Checke Reihe um den Gewinner zu ermitteln
      for(int i = 0; i < 3; i++){
         if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i] && feld[0][i] != ' '){
             return feld[0][i];
         }
     }
 
-    // Checke Diagonale
+    // Checke Diagonale um den Gewinner zu ermitteln
         if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] != ' '){
             return feld [0][0];
         }
@@ -116,7 +111,7 @@ void spielzug(){
     int x; //für Zeile
     int y; //für Spalten
 
-    // Zeile auswaehlen
+    // Zeile und Spalte auswählen
     do{
         printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
         scanf("%d %d", &x, &y);
@@ -175,7 +170,7 @@ void spielerZweiSpielzug(){
 }
 
 void gewinnerAusgabe(char gewinner){
-   
+    // Hier wird der Gewinner/Verlierer im Computermodus ausgegeben
     if(gewinner == SPIELER)
     {
         printf("Du hast gewonnen!");
@@ -190,7 +185,7 @@ void gewinnerAusgabe(char gewinner){
 }
 
 void gewinnerAusgabeMehrspieler(char gewinner){
-  
+    // Hier wird der Gewinner/Verlierer im Mehrspielermodus ausgegeben
     if(gewinner == SPIELER)
     {
         printf("Spieler 1 gewinnt!");
@@ -206,9 +201,9 @@ void gewinnerAusgabeMehrspieler(char gewinner){
 
 int main(){
     
-    char gewinner = ' ';
-    char antwort;
-    int a;
+    char gewinner = ' ';    // Variable für Gewinner
+    char antwort;   // Variable um zu entscheiden, ob man nochmal spielen möchte
+    int a;  // Variable um zu entscheiden welchen Modus man spielen möchte
 
     printf(" __________   __     _______      __________    ____        _______      __________   __________   _______  \n");
     printf("|___    ___| |  |   |   ____|    |___    ___|  / __ \\      |   ____|    |___    ___| |   ____   | |   ____|\n");
@@ -228,21 +223,21 @@ int main(){
         feldErneuern();
         
         if(a == 1){
-        
+        // Spieler wählt Computermodus
         printf("\nSPIELER(X) COMPUTER(O)\n");
-        while(gewinner == ' ' && checkeFreieFelder() != 0){
+        while(gewinner == ' ' && checkeFreieFelder() != 0){     // Schleife die nur abgebrochen wird, wenn es einen Gewinner gibt oder es Unentschieden ist
         feldErstellen();
         spielzug();
         
         gewinner = checkeGewinner();
-            if(gewinner != ' ' || checkeFreieFelder() == 0){
+            if(gewinner != ' ' || checkeFreieFelder() == 0){    // Falls die Schleife hier abgebrochen wird, gewinnt der Spieler
                 break;
             }
         
         computerSpielzug();
         
         gewinner = checkeGewinner();
-            if(gewinner != ' ' || checkeFreieFelder() == 0){
+            if(gewinner != ' ' || checkeFreieFelder() == 0){    // Falls die Schleife hier abgebrochen wird, gewinnt die KI
                 break;
             }
         }
@@ -256,14 +251,14 @@ int main(){
     antwort = toupper(antwort);
 
     } else if(a == 2){
-        
+        // Spieler wählt Mehrspielermodus
         printf("SPIELER 1(X) SPIELER 2(O)\n");
-        while(gewinner == ' ' && checkeFreieFelder() != 0){
+        while(gewinner == ' ' && checkeFreieFelder() != 0){        // Schleife die nur abgebrochen wird, wenn es einen Gewinner gibt oder es Unentschieden ist
         feldErstellen();
         spielzug();
         
         gewinner = checkeGewinner();
-            if(gewinner != ' ' || checkeFreieFelder() == 0){
+            if(gewinner != ' ' || checkeFreieFelder() == 0){        // Falls die Schleife hier abgebrochen wird, gewinnt der erste Spieler
                 break;
             }
         
@@ -271,7 +266,7 @@ int main(){
         spielerZweiSpielzug();
         
         gewinner = checkeGewinner();
-            if(gewinner != ' ' || checkeFreieFelder() == 0){
+            if(gewinner != ' ' || checkeFreieFelder() == 0){        // Falls die Schleife hier abgebrochen wird, gewinnt der zweite Spieler
                 break;
             }
         }
@@ -279,17 +274,14 @@ int main(){
     feldErstellen();
     gewinnerAusgabeMehrspieler(gewinner);
 
-    printf("\nMoechtest du nochmal spielen? (J/N): ");
+    printf("\nMoechtest du nochmal spielen? (J/N): ");     // Abfrage ob man nochmal spielen will         
     getchar();
-    scanf("%c", &antwort);
-    antwort = toupper(antwort);
+    scanf("%c", &antwort);      // Hier wird die Antwort erwartet die J oder N ist 
+    antwort = toupper(antwort);     // ToUpper ist dafür da, um die Zeichenkette in Großbuchstaben auszugeben
     }else{
        
-        printf("Ungueltige Eingabe!\n");
-        printf("\nMoechtest du nochmal spielen? (J/N): ");
-        getchar();
-        scanf("%c", &antwort);
-        antwort = toupper(antwort);
+        printf("Ungueltige Eingabe!\n");    // Falls man den falschen Modus wählt, kommt die Ausgabe Ungültige Eingabe
+        abort();
     }
     }while(antwort == 'J');
 
