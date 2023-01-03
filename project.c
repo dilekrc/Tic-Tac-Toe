@@ -1,8 +1,6 @@
 /*
 Name        : datenstrunkturen.c
-
 Authoren    : Dilek Karaca, Kevin Fach
-
 Beschreibung : Erstellung vom Spielfeld und initalisieurng von Spielern.
 */
 
@@ -10,6 +8,9 @@ Beschreibung : Erstellung vom Spielfeld und initalisieurng von Spielern.
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
+#include <math.h>
+#include <string.h>
+#include <stdbool.h>
 
 // Erstelle eine konstante Variable für den Spieler und für die KI
 char feld[3][3];
@@ -24,8 +25,10 @@ void spielzug();
 void computerSpielzug();
 void spielerZweiSpielzug();
 char checkeGewinner();
-void gewinnerAusgabe(char);
-void gewinnerAusgabeMehrspieler(char);
+void gewinnerAusgabe(char gewinner);
+void gewinnerAusgabeMehrspieler(char gewinner);
+int minimax(int depth, bool isMaximizing);
+int check_minimax_win();
 
 void feldErneuern(){
 // Alle Felder werden auf ' ' gesetzt
@@ -37,16 +40,17 @@ void feldErneuern(){
 }
 
 void feldErstellen(){
-   printf(" _____________________");
-   printf("\n|  _________________  |");
-   printf("\n| |                 | |");
-   printf("\n| |    %c | %c | %c    | |", feld[0][0], feld[0][1], feld[0][2]);
-   printf("\n| |   ---|---|---   | |\n");
-   printf("| |    %c | %c | %c    | |", feld[1][0], feld[1][1], feld[1][2]);
-   printf("\n| |   ---|---|---   | |\n");
-   printf("| |    %c | %c | %c    | |", feld[2][0], feld[2][1], feld[2][2]);
-   printf("\n| |_________________| |");
-   printf("\n|_____________________|\n");
+    // Hier wird das Feld erstellt
+    printf(" _____________________");
+    printf("\n|  _________________  |");
+    printf("\n| |                 | |");
+    printf("\n| |    %c | %c | %c    | |", feld[0][0], feld[0][1], feld[0][2]);
+    printf("\n| |   ---|---|---   | |\n");
+    printf("| |    %c | %c | %c    | |", feld[1][0], feld[1][1], feld[1][2]);
+    printf("\n| |   ---|---|---   | |\n");
+    printf("| |    %c | %c | %c    | |", feld[2][0], feld[2][1], feld[2][2]);
+    printf("\n| |_________________| |");
+    printf("\n|_____________________|\n");
 }
 
 int checkeFreieFelder(){
@@ -61,30 +65,24 @@ int checkeFreieFelder(){
     }
     return freieFelder;
 }
-/*
-|  [0]  |  [1]  |  [2]  |
--------------------------
-|  [3]  |  [4]  |  [5]  |         // <-- bsp FELD
--------------------------
-|  [6]  |  [7]  |  [8]  |
-*/
+
 char checkeGewinner(){
 
-    // Checke Spalte
+    // Checke Spalte um den Gewinner zu ermitteln
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2] && feld[i][0] != ' '){
             return feld [i][0];
         }
     }
 
-    // Checke Reihe
+    // Checke Reihe um den Gewinner zu ermitteln
      for(int i = 0; i < 3; i++){
         if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i] && feld[0][i] != ' '){
             return feld[0][i];
         }
     }
 
-    // Checke Diagonale
+    // Checke Diagonale um den Gewinner zu ermitteln
         if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] != ' '){
             return feld [0][0];
         }
@@ -106,8 +104,6 @@ BESCHREIBUNG: Interagieren mit Spieler in Tic Tac Toe in C
 =====================================================================================================
 VERSION GESCHICHTE:
 - v0.1:
-
-
 =====================================================================================================
 */
 
@@ -116,7 +112,7 @@ void spielzug(){
     int x; //für Zeile
     int y; //für Spalten
 
-    // Zeile auswaehlen
+    // Zeile und Spalte auswählen
     do{
         printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
         scanf("%d %d", &x, &y);
@@ -137,17 +133,141 @@ void spielzug(){
 }
     
 void computerSpielzug(){
-    
-    srand(time(0));
-    int x;
-    int y;
+    int move_i, move_j;
 
-    do{
-        x = rand() % 3;
-        y = rand() % 3;
-    }while (feld[x][y] != ' ');
-      
-    feld[x][y] = COMPUTER;
+    // Set best score to minus INFINITY
+    float besteWert = -INFINITY;
+
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++){
+            // CHECK IF BOARD IS EMPTY
+            if (feld[i][j] == ' '){
+
+                // Change the board temporary
+                // So we can call minimax to calculate it
+                feld[i][j] = COMPUTER;    
+                float wert = minimax(0, false);
+
+                // Reset
+                feld[i][j] = ' ';
+
+                // AS maximizing player, IF score GREATER Than best score,
+                // Change the best score, store current board position to be placed
+                if (wert > besteWert){
+                    besteWert = wert;
+                    move_i = i;
+                    move_j = j;
+                }
+                
+            }           
+        }
+    }
+    // Placed the best position
+    feld[move_i][move_j] = COMPUTER;
+}
+
+// MINIMAX FUNCTION
+int minimax(int depth, bool isMaximizing){     
+    // Base case
+    // Return static evaluation after get the winner
+    
+    int ergebnis = check_minimax_win();
+    
+    if (ergebnis != 2){
+        return ergebnis;
+    }
+
+    // IF Maximizing player turn to analyze
+    if (isMaximizing){
+          
+        // SET best score to minus infinity
+        float besteWert = -INFINITY;
+
+        // ITERATE THROUGH BOARD
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                // Check if the positon in board is empty
+                if (feld[i][j] == ' '){
+
+                    // Change the current position in board as MAXIMIZING (COMPUTER) symbol
+                    // Call minimax recursively, minimizing turn
+                    feld[i][j] = COMPUTER;
+                    float wert = minimax(depth + 1, false);
+
+                    // Reset
+                    feld[i][j] = ' ';
+                    
+                    // AS maximizing player, find the MAX score, store into best score
+                    if (wert > besteWert){
+                        besteWert = wert;
+                    }
+                }
+            }
+        }
+        return besteWert;
+    }
+    // OTHERWISE, MINIMIZING TURN to analyze
+    else{
+        // SET best score to +INFINITY
+        float besteWert = INFINITY;
+
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                if (feld[i][j] == ' '){
+
+                    // Change the current position in board as MAXIMIZING (COMPUTER) symbol, temporary
+                    // Call minimax recursively, maximizing turn
+                    feld[i][j] = SPIELER;
+                    float wert = minimax(depth + 1, true);
+                    
+                    // Reset
+                    feld[i][j] = ' ';
+
+                    // AS Minimizing, get the Minimum score, store it to best score
+                    if (wert < besteWert){
+                        besteWert = wert;
+                    }
+                }
+            }
+        }
+        return besteWert;
+    }
+}
+
+// FUNCTION TO CHECK THE WINNER || ONLY SPECIFY FOR MINIMAX FUNCTION
+/*
+O is COMPUTER as maximizing player. So, it always return 1 for best score.
+-1 is ONLY score for minimizing player: PLAYER.
+*/
+int check_minimax_win(){
+    // Checke Spalte
+    for(int i = 0; i < 3; i++){
+        if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2] && feld[i][0] == SPIELER){
+            return -1;
+        }else if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2] && feld[i][0] == COMPUTER){
+            return 1;
+        }// Checke Reihe
+        else if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i] && feld[0][i] == SPIELER){
+            return -1;
+        }else if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i] && feld[0][i] == COMPUTER){
+            return 1;
+        }// Checke Diagonale
+        else if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] == SPIELER){
+            return -1;
+        }else if(feld[0][2] == feld[1][1] && feld[0][2] == feld[2][0] && feld[0][2] == SPIELER){
+            return -1;
+        }else if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] == COMPUTER){
+            return 1;
+        }else if(feld[0][2] == feld[1][1] && feld[0][2] == feld[2][0] && feld[0][2] == COMPUTER){
+            return 1;
+        }//Checke ob Feld schon voll ist und es Unentschieden ist
+        else if(feld[0][0] != ' ' && feld[0][1] != ' ' && feld[0][2] != ' ' && 
+                     feld[1][0] != ' ' && feld[1][1] != ' ' && feld[1][2] != ' ' &&
+                     feld[2][0] != ' ' && feld[2][1] != ' ' && feld[2][2] != ' '){
+                         return 0;
+        }
+    }
+    return 2;
 }
 
 void spielerZweiSpielzug(){
@@ -155,9 +275,9 @@ void spielerZweiSpielzug(){
     int x; //für Zeile
     int y; //für Spalten
 
-    // Zeile auswaehlen
+    // Zeile und Spalte auswählen
     do{
-        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
+        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");   
         scanf("%d %d", &x, &y);
         x--;
         y--;
@@ -175,7 +295,7 @@ void spielerZweiSpielzug(){
 }
 
 void gewinnerAusgabe(char gewinner){
-   
+    // Hier wird der Gewinner/Verlierer im Computermodus ausgegeben
     if(gewinner == SPIELER)
     {
         printf("Du hast gewonnen!");
@@ -190,7 +310,7 @@ void gewinnerAusgabe(char gewinner){
 }
 
 void gewinnerAusgabeMehrspieler(char gewinner){
-  
+    // Hier wird der Gewinner/Verlierer im Mehrspielermodus ausgegeben
     if(gewinner == SPIELER)
     {
         printf("Spieler 1 gewinnt!");
@@ -206,9 +326,9 @@ void gewinnerAusgabeMehrspieler(char gewinner){
 
 int main(){
     
-    char gewinner = ' ';
-    char antwort;
-    int a;
+    char gewinner = ' ';    // Variable für Gewinner
+    char antwort;   // Variable um zu entscheiden, ob man nochmal spielen möchte
+    int a;  // Variable um zu entscheiden welchen Modus man spielen möchte
 
     printf(" __________   __     _______      __________    ____        _______      __________   __________   _______  \n");
     printf("|___    ___| |  |   |   ____|    |___    ___|  / __ \\      |   ____|    |___    ___| |   ____   | |   ____|\n");
@@ -228,21 +348,21 @@ int main(){
         feldErneuern();
         
         if(a == 1){
-        
+        // Spieler wählt Computermodus
         printf("\nSPIELER(X) COMPUTER(O)\n");
-        while(gewinner == ' ' && checkeFreieFelder() != 0){
+        while(gewinner == ' ' && checkeFreieFelder() != 0){     // Schleife die nur abgebrochen wird, wenn es einen Gewinner gibt oder es Unentschieden ist
         feldErstellen();
         spielzug();
         
         gewinner = checkeGewinner();
-            if(gewinner != ' ' || checkeFreieFelder() == 0){
+            if(gewinner != ' ' || checkeFreieFelder() == 0){    // Falls die Schleife hier abgebrochen wird, gewinnt der Spieler
                 break;
             }
         
         computerSpielzug();
         
         gewinner = checkeGewinner();
-            if(gewinner != ' ' || checkeFreieFelder() == 0){
+            if(gewinner != ' ' || checkeFreieFelder() == 0){    // Falls die Schleife hier abgebrochen wird, gewinnt die KI
                 break;
             }
         }
@@ -256,14 +376,14 @@ int main(){
     antwort = toupper(antwort);
 
     } else if(a == 2){
-        
+        // Spieler wählt Mehrspielermodus
         printf("SPIELER 1(X) SPIELER 2(O)\n");
-        while(gewinner == ' ' && checkeFreieFelder() != 0){
+        while(gewinner == ' ' && checkeFreieFelder() != 0){        // Schleife die nur abgebrochen wird, wenn es einen Gewinner gibt oder es Unentschieden ist
         feldErstellen();
         spielzug();
         
         gewinner = checkeGewinner();
-            if(gewinner != ' ' || checkeFreieFelder() == 0){
+            if(gewinner != ' ' || checkeFreieFelder() == 0){        // Falls die Schleife hier abgebrochen wird, gewinnt der erste Spieler
                 break;
             }
         
@@ -271,7 +391,7 @@ int main(){
         spielerZweiSpielzug();
         
         gewinner = checkeGewinner();
-            if(gewinner != ' ' || checkeFreieFelder() == 0){
+            if(gewinner != ' ' || checkeFreieFelder() == 0){        // Falls die Schleife hier abgebrochen wird, gewinnt der zweite Spieler
                 break;
             }
         }
@@ -279,21 +399,18 @@ int main(){
     feldErstellen();
     gewinnerAusgabeMehrspieler(gewinner);
 
-    printf("\nMoechtest du nochmal spielen? (J/N): ");
+    printf("\nMoechtest du nochmal spielen? (J/N): ");     // Abfrage ob man nochmal spielen will         
     getchar();
-    scanf("%c", &antwort);
-    antwort = toupper(antwort);
+    scanf("%c", &antwort);      // Hier wird die Antwort erwartet die J oder N ist 
+    antwort = toupper(antwort);     // ToUpper ist dafür da, um die Zeichenkette in Großbuchstaben auszugeben
     }else{
        
-        printf("Ungueltige Eingabe!\n");
-        printf("\nMoechtest du nochmal spielen? (J/N): ");
-        getchar();
-        scanf("%c", &antwort);
-        antwort = toupper(antwort);
+        printf("Ungueltige Eingabe!\n");    // Falls man den falschen Modus wählt, kommt die Ausgabe Ungültige Eingabe und das Program wird geschloßen
+        abort();
     }
-    }while(antwort == 'J');
+    }while(antwort == 'J');     // Falls man J auswählt fängt das Spiel von neu an
 
-    printf("Danke fuers Spielen!");
+    printf("Danke fuers Spielen!");     // Falls man N auswählt, kommt die Ausgabe Danke fürs spielen und das Program schließt sich
     
     return 0;
 
