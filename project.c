@@ -13,19 +13,15 @@ Beschreibung : Erstellung vom Spielfeld und initalisieurng von Spielern.
 #include <stdbool.h>
 
 // Erstelle eine konstante Variable für den Spieler und für die KI
-struct Spielfeld{
-    char feld[3][3];
-};
-
+char feld[3][3];
 const char SPIELER ='X';
 const char SPIELERZWEI = 'O';
 const char COMPUTER = 'O';
 
-
 int minimax(int depth, bool isMaximizing);
 int check_minimax_win();
 
-void feldErneuern(Spielfeld sf){
+void feldErneuern(){
 // Alle Felder werden auf ' ' gesetzt
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < 3; j++){
@@ -283,31 +279,29 @@ O is COMPUTER as maximizing player. So, it always return 1 for best score.
 -1 is ONLY score for minimizing player: PLAYER.
 */
 int check_minimax_win(){
-    // Checke Spalte
+    // Checke Diagonale
+    if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] == SPIELER){
+        return -1;
+    }else if(feld[0][2] == feld[1][1] && feld[0][2] == feld[2][0] && feld[0][2] == SPIELER){
+        return -1;
+    }else if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] == COMPUTER){
+        return 1;
+    }else if(feld[0][2] == feld[1][1] && feld[0][2] == feld[2][0] && feld[0][2] == COMPUTER){
+        return 1;
+    }
+    // Checke Spalte und Reihe
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2] && feld[i][0] == SPIELER){
             return -1;
         }else if(feld[i][0] == feld[i][1] && feld[i][0] == feld[i][2] && feld[i][0] == COMPUTER){
             return 1;
-        }// Checke Reihe
-        else if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i] && feld[0][i] == SPIELER){
+        }else if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i] && feld[0][i] == SPIELER){
             return -1;
         }else if(feld[0][i] == feld[1][i] && feld[0][i] == feld[2][i] && feld[0][i] == COMPUTER){
             return 1;
-        }// Checke Diagonale
-        else if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] == SPIELER){
-            return -1;
-        }else if(feld[0][2] == feld[1][1] && feld[0][2] == feld[2][0] && feld[0][2] == SPIELER){
-            return -1;
-        }else if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] == COMPUTER){
-            return 1;
-        }else if(feld[0][2] == feld[1][1] && feld[0][2] == feld[2][0] && feld[0][2] == COMPUTER){
-            return 1;
         }//Checke ob Feld schon voll ist und es Unentschieden ist
-        else if(feld[0][0] != ' ' && feld[0][1] != ' ' && feld[0][2] != ' ' && 
-                     feld[1][0] != ' ' && feld[1][1] != ' ' && feld[1][2] != ' ' &&
-                     feld[2][0] != ' ' && feld[2][1] != ' ' && feld[2][2] != ' '){
-                         return 0;
+        else if(checkeFreieFelder() == 0){
+            return 0;
         }
     }
     return 2;
