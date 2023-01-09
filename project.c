@@ -174,24 +174,22 @@ void spielzug(int modus){
 void computerSpielzug(){
     int move_i, move_j;
 
-    // Set best score to minus INFINITY
+    // Setze besteWert INFINITY
     float besteWert = -INFINITY;
 
     for (int i = 0; i < 3; i++){
         for (int j = 0; j < 3; j++){
-            // CHECK IF BOARD IS EMPTY
+            // checken ob Spielfeld leer ist
             if (feld[i][j] == ' '){
 
-                // Change the board temporary
-                // So we can call minimax to calculate it
+                // feld wird temporär geändert um minimax aufzurufen und den Schritt zu berechnen
                 feld[i][j] = COMPUTER;    
                 float wert = minimax(0, false);
 
-                // Reset
+                // feld wird zurückgesetzt
                 feld[i][j] = ' ';
 
-                // AS maximizing player, IF score GREATER Than best score,
-                // Change the best score, store current board position to be placed
+                // Für den maximierenden Spieler: Wenn wert grösser als besteWert ist, übernimmt besteWert den Wert
                 if (wert > besteWert){
                     besteWert = wert;
                     move_i = i;
@@ -201,42 +199,40 @@ void computerSpielzug(){
             }           
         }
     }
-    // Placed the best position
+    //Computer setzt 'O' auf das beste Feld
     feld[move_i][move_j] = COMPUTER;
 }
 
 // MINIMAX FUNCTION
 int minimax(int depth, bool isMaximizing){     
-    // Base case
-    // Return static evaluation after get the winner
-    
+    //Es wird überprüft zu welchem Ergebnis der jeweilige Schritt führt
     int ergebnis = check_minimax_win();
     
     if (ergebnis != 2){
         return ergebnis;
     }
 
-    // IF Maximizing player turn to analyze
+    //Wenn Computer maximierend ist
     if (isMaximizing){
           
-        // SET best score to minus infinity
+        //Setze besteWert zu -Infinity
         float besteWert = -INFINITY;
 
-        // ITERATE THROUGH BOARD
+        //Durch das feld iterieren
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                // Check if the positon in board is empty
+                // Checken ob feld an der Position leer ist
                 if (feld[i][j] == ' '){
 
-                    // Change the current position in board as MAXIMIZING (COMPUTER) symbol
-                    // Call minimax recursively, minimizing turn
+                    //Das feld bekommt das Symbol des maximierenden Spielers(COMPUTER)
+                    //minimax wird aufgerufen um danach den minimierenden Spielzug zu analysieren
                     feld[i][j] = COMPUTER;
                     float wert = minimax(depth + 1, false);
 
-                    // Reset
+                    // feld wird an der Position zurückgesetzt
                     feld[i][j] = ' ';
                     
-                    // AS maximizing player, find the MAX score, store into best score
+                    // wert wird, falls grösser, als besteWert für den maximierenden Spieler(COMPUTER) gespeichert
                     if (wert > besteWert){
                         besteWert = wert;
                     }
@@ -245,24 +241,24 @@ int minimax(int depth, bool isMaximizing){
         }
         return besteWert;
     }
-    // OTHERWISE, MINIMIZING TURN to analyze
+    //Wenn COMPUTER minimierenden ist
     else{
-        // SET best score to +INFINITY
+        //Setze besteWert zu INFINITY
         float besteWert = INFINITY;
 
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 if (feld[i][j] == ' '){
 
-                    // Change the current position in board as MAXIMIZING (COMPUTER) symbol, temporary
-                    // Call minimax recursively, maximizing turn
+                    // Das feld bekommt das Symbol des maximierenden Spielers(SPIELER)
+                    //minimax wird aufgerufen um danach den maximierend Spielzug zu analysieren
                     feld[i][j] = SPIELER;
                     float wert = minimax(depth + 1, true);
                     
-                    // Reset
+                    // feld wird an der Position zurückgesetzt
                     feld[i][j] = ' ';
 
-                    // AS Minimizing, get the Minimum score, store it to best score
+                    // wert wird, falls kleiner, als besteWert für den minimierenden Spieler(COMPUTER) gespeichert
                     if (wert < besteWert){
                         besteWert = wert;
                     }
@@ -273,11 +269,8 @@ int minimax(int depth, bool isMaximizing){
     }
 }
 
-// FUNCTION TO CHECK THE WINNER || ONLY SPECIFY FOR MINIMAX FUNCTION
-/*
-O is COMPUTER as maximizing player. So, it always return 1 for best score.
--1 is ONLY score for minimizing player: PLAYER.
-*/
+//Funktion um zu analysieren welche Schritte in minimax zu welchem ergebnis führen
+//Wenn SPIELER gewinnt wird -1 zurückgegeben, wenn COMPUTER gewinnt 1, bei Unentschieden 0 und wenn das Spiel noch läuft 2
 int check_minimax_win(){
     // Checke Diagonale
     if(feld[0][0] == feld[1][1] && feld[0][0] == feld[2][2] && feld[0][0] == SPIELER){
