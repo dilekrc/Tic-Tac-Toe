@@ -13,24 +13,19 @@ Beschreibung : Erstellung vom Spielfeld und initalisieurng von Spielern.
 #include <stdbool.h>
 
 // Erstelle eine konstante Variable für den Spieler und für die KI
-char feld[3][3];
+struct Spielfeld{
+    char feld[3][3];
+};
+
 const char SPIELER ='X';
 const char SPIELERZWEI = 'O';
 const char COMPUTER = 'O';
 
-void feldErneuern();
-void feldErstellen();
-int checkeFreieFelder();
-void spielzug();
-void computerSpielzug();
-void spielerZweiSpielzug();
-char checkeGewinner();
-void gewinnerAusgabe(char gewinner);
-void gewinnerAusgabeMehrspieler(char gewinner);
+
 int minimax(int depth, bool isMaximizing);
 int check_minimax_win();
 
-void feldErneuern(){
+void feldErneuern(Spielfeld sf){
 // Alle Felder werden auf ' ' gesetzt
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < 3; j++){
@@ -90,8 +85,6 @@ char checkeGewinner(){
             return feld[0][2];
         }
     return ' ';
-
-
 }
 
 /*
@@ -107,19 +100,23 @@ VERSION GESCHICHTE:
 =====================================================================================================
 */
 
-void spielzug(){
+void spielzug(int modus){
     
     int x; //für Zeile
     int y; //für Spalten
 
-    // Zeile und Spalte auswählen
-    do{
+    // Spieler 1 gegen Computer
+    if(modus == 1){
+        do{
         printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
-        scanf("%d %d", &x, &y);
-        x--;
-        y--;
+        if(scanf("%d %d", &x, &y)==2){
+            x--;
+            y--;
+        }else{
+            printf("Ungueltiger Spielzug!\n");
+          
+        }
         
-
         if(feld[x][y] != ' ')
         {
             printf("Ungueltiger Spielzug!\n");
@@ -129,7 +126,53 @@ void spielzug(){
             feld[x][y] = SPIELER;
             break;
         }
-   }    while (feld[x][y] != ' ');
+    }    while (feld[x][y] != ' ');
+    //Spierler 1 und 2 im Mehrspielermodus
+    }else if(modus == 2){
+        do{
+        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
+        if(scanf("%d %d", &x, &y)==2){
+            x--;
+            y--;
+        }else{
+            printf("Ungueltiger Spielzug!\n");
+          
+        }
+        
+        if(feld[x][y] != ' ')
+        {
+            printf("Ungueltiger Spielzug!\n");
+        }
+        else
+        {
+            feld[x][y] = SPIELER;
+            break;
+        }
+    }    while (feld[x][y] != ' ');
+
+    feldErstellen();
+        
+        do{
+        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");
+        if(scanf("%d %d", &x, &y)==2){
+            x--;
+            y--;
+        }else{
+            printf("Ungueltiger Spielzug!\n");
+          
+        }
+        
+        if(feld[x][y] != ' ')
+        {
+            printf("Ungueltiger Spielzug!\n");
+        }
+        else
+        {
+            feld[x][y] = SPIELERZWEI;
+            break;
+        }
+    }    while (feld[x][y] != ' ');
+    }
 }
     
 void computerSpielzug(){
@@ -270,56 +313,20 @@ int check_minimax_win(){
     return 2;
 }
 
-void spielerZweiSpielzug(){
-    
-    int x; //für Zeile
-    int y; //für Spalten
-
-    // Zeile und Spalte auswählen
-    do{
-        printf("\nWaehle eine Zeile und eine Spalte aus #(1-3): ");   
-        scanf("%d %d", &x, &y);
-        x--;
-        y--;
-
-        if(feld[x][y] != ' ')
-        {
-            printf("Ungueltiger Spielzug!\n");
-        }
-        else
-        {
-            feld[x][y] = SPIELERZWEI;
-            break;
-        }
-    }       while (feld[x][y] != ' ');
-}
-
-void gewinnerAusgabe(char gewinner){
+void gewinnerAusgabe(char gewinner, int modus){
     // Hier wird der Gewinner/Verlierer im Computermodus ausgegeben
     if(gewinner == SPIELER)
     {
-        printf("Du hast gewonnen!");
+        printf("Spieler 1 hat gewonnen!");
     }
-    else if(gewinner == COMPUTER)
+    else if(gewinner == COMPUTER && modus == 1)
     {
-        printf("Du hast verloren!");
+        printf("Computer hat gewonnen!");
     }
-    else{
-        printf("Unentschieden!");
-    }
-}
-
-void gewinnerAusgabeMehrspieler(char gewinner){
-    // Hier wird der Gewinner/Verlierer im Mehrspielermodus ausgegeben
-    if(gewinner == SPIELER)
+    else if(gewinner == SPIELERZWEI && modus == 2)
     {
-        printf("Spieler 1 gewinnt!");
-    }
-    else if(gewinner == SPIELERZWEI)
-    {
-        printf("Spieler 2 gewinnt!");
-    }
-    else{
+        printf("Spieler 2 hat gewonnen!");
+    }else{
         printf("Unentschieden!");
     }
 }
@@ -328,7 +335,7 @@ int main(){
     
     char gewinner = ' ';    // Variable für Gewinner
     char antwort;   // Variable um zu entscheiden, ob man nochmal spielen möchte
-    int a;  // Variable um zu entscheiden welchen Modus man spielen möchte
+    int modus;  // Variable um zu entscheiden welchen Modus man spielen möchte
 
     printf(" __________   __     _______      __________    ____        _______      __________   __________   _______  \n");
     printf("|___    ___| |  |   |   ____|    |___    ___|  / __ \\      |   ____|    |___    ___| |   ____   | |   ____|\n");
@@ -340,19 +347,19 @@ int main(){
     printf("\n __________________________________________________________________________________________________________\n");
     printf("\n\nMODUS: Computer(1) oder Mehrspieler(2)?\n");
     printf("\nEingabe : ");
-    scanf("%d", &a);
+    scanf("%d", &modus);
 
     do{
         gewinner = ' ';
         antwort = ' ';
         feldErneuern();
         
-        if(a == 1){
+        if(modus == 1){
         // Spieler wählt Computermodus
         printf("\nSPIELER(X) COMPUTER(O)\n");
         while(gewinner == ' ' && checkeFreieFelder() != 0){     // Schleife die nur abgebrochen wird, wenn es einen Gewinner gibt oder es Unentschieden ist
         feldErstellen();
-        spielzug();
+        spielzug(modus);
         
         gewinner = checkeGewinner();
             if(gewinner != ' ' || checkeFreieFelder() == 0){    // Falls die Schleife hier abgebrochen wird, gewinnt der Spieler
@@ -368,19 +375,19 @@ int main(){
         }
 
     feldErstellen();
-    gewinnerAusgabe(gewinner);
+    gewinnerAusgabe(gewinner, modus);
 
     printf("\nMoechtest du nochmal spielen? (J/N): ");
     getchar();
     scanf("%c", &antwort);
     antwort = toupper(antwort);
 
-    } else if(a == 2){
+    } else if(modus == 2){
         // Spieler wählt Mehrspielermodus
         printf("SPIELER 1(X) SPIELER 2(O)\n");
         while(gewinner == ' ' && checkeFreieFelder() != 0){        // Schleife die nur abgebrochen wird, wenn es einen Gewinner gibt oder es Unentschieden ist
         feldErstellen();
-        spielzug();
+        spielzug(modus);
         
         gewinner = checkeGewinner();
             if(gewinner != ' ' || checkeFreieFelder() == 0){        // Falls die Schleife hier abgebrochen wird, gewinnt der erste Spieler
@@ -388,7 +395,7 @@ int main(){
             }
         
         feldErstellen();
-        spielerZweiSpielzug();
+        spielzug(modus);
         
         gewinner = checkeGewinner();
             if(gewinner != ' ' || checkeFreieFelder() == 0){        // Falls die Schleife hier abgebrochen wird, gewinnt der zweite Spieler
@@ -397,7 +404,7 @@ int main(){
         }
 
     feldErstellen();
-    gewinnerAusgabeMehrspieler(gewinner);
+    gewinnerAusgabe(gewinner, modus);
 
     printf("\nMoechtest du nochmal spielen? (J/N): ");     // Abfrage ob man nochmal spielen will         
     getchar();

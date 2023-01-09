@@ -1,11 +1,6 @@
-/*
-=============================================================================================================
-=============================================================================================================
- NAME: Spielende.c
+/* NAME: Spielende.c
 AUTHOREN: Nathalie Kascha
 BESCHREIBUNG: Es soll ermittelt werden, wer gewonnen hat oder ob das Spiel mit ein unentschieden endet.
-=============================================================================================================
-=============================================================================================================
 */
 
 
@@ -29,19 +24,16 @@ UNTERSUCHUNG
 unentschieden hat den Wert "0", wenn es unentschieden ausging.
 Wenn es unklar ist, dann "2".
 
-COMPUTER = 'X'
-SPIELER = 'O'
+COMPUTER = 'O'
+HUMAN = 'X'
 
 */
-
-/*
 
 void untersuchung(){
 
     /*Hier wird jedes Feld nach 'X' ueberprueft*/
 
     //Horizontal geprueft, wer gewinnt.
-    /*
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == 1 && feld[i][1] == 1 &&feld[i][2] == 1) 
         return 1;
@@ -58,9 +50,9 @@ void untersuchung(){
     if(feld[0][2] == 1 && feld[1][1]==1 && feld[2][0]==1)
     return 1;
 
-    /*Hier wird jedes Feld nach 'O' ueberprueft*/
+    /*Hier wird jedes Feld nach 'X' ueberprueft*/
 
-    //Horizontal geprueft, wer gewinnt. /*
+    //Horizontal geprueft, wer gewinnt.
     for(int i = 0; i < 3; i++){
         if(feld[i][0] == -1 && feld[i][1] == -1 &&feld[i][2] == -1) //Hier wird jedes Feld nach 'O' ueberprueft
         return -1;
@@ -76,7 +68,6 @@ void untersuchung(){
 
     if(feld[0][2] == 1 && feld[1][1]==1 && feld[2][0]==1)
     return -1;
-    
 
     /*Hier werden alle Positionen durchgegangen. Und es wird ueberprueft, ob ein Feld offen ist = "Unklar"*/
     for(int i = 0; i < 3; i++){
@@ -89,93 +80,78 @@ void untersuchung(){
     }
 }
 
+/*Hier wird das MinMax-Algorithmus implementiert*/
 
-/*Hier wird das MinMax-Algorithmus implementiertmmmm*/
+void max(){
+    if untersuchung() != 2; //Wenn alle Felder belegt sind, wird sie zurueck zur Untersuchung
+    return untersuchung();
 
-    /*Den besten Zug für den computer finiden*/
+    /*Wir setzten an jeder Position die noch moeglich ist unseren spielstand, bei MAX wird es ein 'X' danach wird das ganze untersucht und es wird
+    MIN aufgerufen*/
 
-    /*Der Computer ist dran*/
-
-
-    /*void besten_zug(){
-    int beste_wert = -999; //unendlich
-    int wert;
-    int best_zug;
-
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
-            if(feld[i][j] == 2) //Es wird jedes leere Feld durchgegangen
-            feld[i][j] = 1; //setze O hin
-
-            //Den wert des nächsten zugs berechnen
-            wert = minimax(Feld, 0, -max_spieler)
-            if(wert > beste_wert){
-                beste_wert = wert;
-            }
-            feld[i][j] = 2; //setzen zurueck
-
-            best_zug = {i, j};
-
-            return beste_wert;
-            }
-        }
-        feld[best_zug.i][best_zug.j] = 1;
-        int currrentplayer = -1;
-    }
-
-
-
-
-    void minimax(int Feld[3][3], int depth, int max_spieler){
-    //Prüfen, ob jemand gewonnen hat
-    int ergebnis = untersuchung();
-    if(ergebnis != 0){
-    //Score zurueckgegeben
-    return ergebnis;
-    }
-
-    if(max_spieler){  //Der Computer ist dran
-
-    int beste_wert = -999; //unendlich
+    int maximal_wert = -999; //unendlich
     int wert;
 
     for(int i = 0; i < 3; i++){
         for(int j = 0; j < 3; j++){
             if(feld[i][j] == 2) //leeres Feld?
-
-            feld[i][j] = 1; //setze O hin
-
-            //Der wert des nächsten zugs berechnen
-            wert = minimax(Feld, depth+1, -max_spieler)
-            if(wert > beste_wert){
-                beste_wert = wert;
+            feld[i][j] = 1; //setzen auf MIN auf
+            wert = min()
+            if(wert > maximal_wert){
+                maximal_wert = wert;
             }
             feld[i][j] = 2; //setzen zurueck
 
-            }
-            return beste_wert;  //Alle moeglichen zuege für den Spieler
-        }
-    }else{
-
-        int beste_wert = 999; //unendlich
-        int wert;
-
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
-            if(feld[i][j] == 2) //leeres Feld?
-
-            feld[i][j] = -1; //setze O hin
-
-            //Der wert des nächsten zugs berechnen
-            wert = minimax(Feld, depth+1, max_spieler)
-            if(wert < beste_wert){
-                beste_wert = wert;
-            }
-            feld[i][j] = 2; //setzen zurueck
-
-            }
+            return maximal_wert;
         }
     }
-    return beste_wert;  //Alle moeglichen zuege für den Spieler
 }
-*/
+
+void min(){
+
+    int minimal_wert = 999; //unendlich
+    int wert;
+
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            if(feld[i][j] == 2) //leeres Feld?
+            feld[i][j] = -1; //setzen auf MIN auf
+            wert = max();
+            if(wert < minimal_wert){
+                minimal_wert = wert;
+            }
+            feld[i][j] = 2; //setzen zurueck
+
+            return minimal_wert;
+        }
+    }
+}
+
+/*Der Computer muss automatisch die MINIMUM Werte generieren und speichern.
+ Wo setzte ich mein optimalen Zug?*/
+
+ int minimum_I = 0;
+ int minimum_J = 0;
+
+void min_location(){
+
+    int minimal_wert = 999; //unendlich
+    int wert;
+
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            if(feld[i][j] == 2) //leeres Feld?
+            feld[i][j] = -1; //setzen auf MIN auf
+            wert = max();
+            if(wert < minimal_wert){
+                minimal_wert = wert;
+                minimum_I = i;  /* Hier werden die Positionen gespeichert*/
+                minimum_J = j;
+            }
+            feld[i][j] = 2; //setzen zurueck
+
+            return minimal_wert;
+        }
+    }
+}
+
